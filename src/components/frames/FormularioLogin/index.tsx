@@ -47,7 +47,7 @@ export default function LoginForm() {
 
           <button
             type="submit"
-            className="bg-primary hover:bg-[#5597F8] text-white py-3 rounded-lg font-semibold transition duration-300"
+            className="bg-primary hover:bg-[#5597F8] hover:cursor-pointer text-white py-3 rounded-lg font-semibold transition duration-300"
           >
             Ingresar
           </button>
