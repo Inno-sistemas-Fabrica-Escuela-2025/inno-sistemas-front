@@ -1,3 +1,5 @@
+"use client";
+
 import Sidebar from "../../frames/SideBar";
 import { Bell, User, LogOut } from "lucide-react";
 import {
@@ -13,26 +15,30 @@ import {
 } from "@/components/items/ui/dropdown-menu";
 import { Badge } from "@/components/items/ui/Badge";
 
-const notifications = [
-  {
-    id: 1,
-    label: "Notificación 1",
-    description: "Descripción de la notificación 1",
-    date: "2h",
-  },
-  {
-    id: 2,
-    label: "Notificación 2",
-    description: "Descripción de la notificación 2",
-    date: "1min",
-  },
-];
-
 export default function MainLayout({
   children,
+  user,
 }: {
   children: React.ReactNode;
+  user: { name: string; email: string; role: string } | null;
 }) {
+  const email = user?.email || "email@example.com";
+
+  const notifications = [
+    {
+      id: 1,
+      label: "Notificación 1",
+      description: "Descripción de la notificación 1",
+      date: "2h",
+    },
+    {
+      id: 2,
+      label: "Notificación 2",
+      description: "Descripción de la notificación 2",
+      date: "1min",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-dark text-white p-4">
       <div className="flex gap-6">
@@ -59,17 +65,16 @@ export default function MainLayout({
                 </PopoverTrigger>
                 <PopoverContent className="bg-accent text-white w-80 rounded-lg shadow-lg p-4 mx-20 mt-2">
                   <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-base font-semibold text-secondary">Notificaciones</h2>
+                    <h2 className="text-base font-semibold text-secondary">
+                      Notificaciones
+                    </h2>
                     <button className="text-sm text-primary hover:text-secondary hover:cursor-pointer">
                       Marcar todo como leído
                     </button>
                   </div>
                   <div className="space-y-2 max-h-60 overflow-y-auto">
                     {notifications.map((n) => (
-                      <div
-                        key={n.id}
-                        className="p-2 bg-secondary rounded-lg "
-                      >
+                      <div key={n.id} className="p-2 bg-secondary rounded-lg ">
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-medium">{n.label}</p>
@@ -77,9 +82,7 @@ export default function MainLayout({
                               {n.description}
                             </p>
                           </div>
-                          <span className="text-xs text-white">
-                            {n.date}
-                          </span>
+                          <span className="text-xs text-white">{n.date}</span>
                         </div>
                       </div>
                     ))}
@@ -96,7 +99,7 @@ export default function MainLayout({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-accent text-white mt-2 mx-9 rounded-lg shadow-lg w-56">
                   <div className="px-4 py-2 text-sm text-primary border-b border-gray-200">
-                    email@example.com
+                    {email}
                   </div>
                   <DropdownMenuItem className="cursor-pointer hover:bg-dark text-primary">
                     <LogOut className="h-4 w-4 mr-2" />

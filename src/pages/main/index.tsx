@@ -1,6 +1,26 @@
-import MainLayout from '@/components/layouts/MainLayout'
+import { GetServerSideProps } from "next";
+import { getUserFromRequest } from "@/lib/auth";
 
-function HomeContent() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const user = getUserFromRequest(context.req);
+
+  const safeUser = user
+    ? {
+        id: user.id ?? null,
+        email: user.email ?? null,
+        name: user.name ?? null,
+        role: user.role ?? null,
+      }
+    : null;
+
+  return {
+    props: {
+      user: safeUser,
+    },
+  };
+};
+
+export default function HomeContent() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="bg-accent p-6 rounded-xl text-white shadow-md">
@@ -19,13 +39,5 @@ function HomeContent() {
         </ul>
       </div>
     </div>
-  )
-}
-
-export default function MainSectionLayout() {
-  return (
-    <MainLayout>
-      <HomeContent />
-    </MainLayout>
-  )
+  );
 }
