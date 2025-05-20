@@ -31,3 +31,8 @@ export function getUserFromRequest(req: IncomingMessage): Omit<User, 'token'> | 
     return null;
   }
 }
+
+export async function logout() {
+  await fetch('/api/logout', { method: 'POST' });
+  window.location.href = '/';
+}

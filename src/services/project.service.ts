@@ -1,7 +1,7 @@
 import api from './api'
 
 export interface ProjectDTO {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   startDate: string;

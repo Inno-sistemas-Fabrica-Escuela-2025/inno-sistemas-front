@@ -13,7 +13,7 @@ interface EssentialLinkProps {
 
 const EssentialLink = ({ title, link, icon: Icon }: EssentialLinkProps) => {
   const pathname = usePathname();
-  const normalize = (path: string) => path.replace(/\/$/, "");
+  const normalize = (path?: string) => (path ?? "").replace(/\/$/, "");
   const isActive = normalize(pathname) === normalize(link);
 
   return (

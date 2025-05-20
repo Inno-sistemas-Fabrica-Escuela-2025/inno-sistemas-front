@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/items/ui/dropdown-menu";
 import { Badge } from "@/components/items/ui/Badge";
+import { logout } from "@/lib/auth";
 
 export default function MainLayout({
   children,
@@ -101,7 +102,7 @@ export default function MainLayout({
                   <div className="px-4 py-2 text-sm text-primary border-b border-gray-200">
                     {email}
                   </div>
-                  <DropdownMenuItem className="cursor-pointer hover:bg-dark text-primary">
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer hover:bg-dark text-primary">
                     <LogOut className="h-4 w-4 mr-2" />
                     Cerrar sesión
                   </DropdownMenuItem>
