@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { login } from '@/services/auth.service'
-import { useRouter } from 'next/navigation'
-import LoadingSpinner from '@/components/items/LoadSpinner'
+import { useState } from "react";
+import { login } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/items/LoadSpinner";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
-      const response = await login({ email, password })
+      const response = await login({ email, password });
 
-      localStorage.setItem('token', response.token)
+      localStorage.setItem("token", response.token);
       localStorage.setItem(
-        'user',
+        "user",
         JSON.stringify({
           id: response.id,
           name: response.name,
@@ -31,19 +31,23 @@ export default function LoginForm() {
           role: response.role,
           status: response.status,
         })
-      )
+      );
 
-      router.push('/main')
+      router.push("/main");
     } catch (err) {
-      setError('Credenciales inválidas. Intenta de nuevo.')
+      setError("Credenciales inválidas. Intenta de nuevo.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-md">
-      {/* ... logo y demás ... */}
+      {/* Logo y "sistemas" */}
+      <div className="flex items-center justify-center mb-8 gap-3">
+        <img src="/img/logo.png" alt="Logo" className="h-12 w-auto" />
+        <span className="font-bold text-2xl text-primary">sistemas</span>
+      </div>
 
       <div className="bg-white rounded-2xl p-8">
         <h1 className="text-primary font-bold text-3xl mb-2 text-center">
@@ -72,9 +76,7 @@ export default function LoginForm() {
             required
           />
 
-          {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <button
             type="submit"
@@ -82,13 +84,13 @@ export default function LoginForm() {
             className={`bg-primary text-white py-3 rounded-lg font-semibold transition duration-300 flex items-center justify-center
               ${
                 loading
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-[#5597F8] hover:cursor-pointer'
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-[#5597F8] hover:cursor-pointer"
               }
             `}
           >
             {loading && <LoadingSpinner size={20} color="text-white mr-2" />}
-            {loading ? 'Cargando...' : 'Ingresar'}
+            {loading ? "Cargando..." : "Ingresar"}
           </button>
         </form>
 
@@ -97,5 +99,5 @@ export default function LoginForm() {
         </p>
       </div>
     </div>
-  )
+  );
 }
