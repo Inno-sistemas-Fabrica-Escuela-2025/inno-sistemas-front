@@ -4,6 +4,8 @@ import { useState } from "react";
 import { login } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/items/LoadSpinner";
+import Image from "next/image";
+import Cookies from "js-cookie";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -20,22 +22,17 @@ export default function LoginForm() {
     try {
       const response = await login({ email, password });
 
-      localStorage.setItem("token", response.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: response.id,
-          name: response.name,
-          email: response.email,
-          dni: response.dni,
-          role: response.role,
-          status: response.status,
-        })
-      );
+      Cookies.set("token", response.token, {
+        secure: true,
+        sameSite: "Lax",
+        path: "/",
+        expires: 1,
+      });
 
       router.push("/main");
     } catch (err) {
       setError("Credenciales inválidas. Intenta de nuevo.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -45,7 +42,7 @@ export default function LoginForm() {
     <div className="w-full max-w-md">
       {/* Logo y "sistemas" */}
       <div className="flex items-center justify-center mb-8 gap-3">
-        <img src="/img/logo.png" alt="Logo" className="h-12 w-auto" />
+        <Image src="/img/logo.png" alt="Logo" width={300} height={300} className="h-12 w-auto" />
         <span className="font-bold text-2xl text-primary">sistemas</span>
       </div>
 
