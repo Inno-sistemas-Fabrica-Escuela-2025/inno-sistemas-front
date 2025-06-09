@@ -10,22 +10,35 @@ import { useState } from "react";
 
 import { useProjectData } from "@/hooks/useProjectData";
 import { useFilteredTasks } from "@/hooks/useFilteredTasks";
+import { GetServerSideProps } from "next";
+import { getUserFromRequest } from "@/lib/auth";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const user = getUserFromRequest(context.req);
+
+  const safeUser = user
+    ? {
+        id: user.id ?? null,
+        email: user.email ?? null,
+        name: user.name ?? null,
+        role: user.role ?? null,
+      }
+    : null;
+
+  return {
+    props: {
+      user: safeUser,
+    },
+  };
+};
 
 export default function ProjectDetailPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = Number(params?.id);
 
-  const {
-    user,
-    project,
-    team,
-    tasks,
-    isLoading,
-    error,
-    setTasks,
-    setTeam,
-  } = useProjectData(projectId);
+  const { user, project, team, tasks, isLoading, error, setTasks, setTeam } =
+    useProjectData(projectId);
 
   const [filterName, setFilterName] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
@@ -55,10 +68,42 @@ export default function ProjectDetailPage() {
     router.back();
   };
 
+  // Puedes poner esto arriba del componente principal o en un archivo aparte
+  const PriorityBadge = ({ priority }: { priority: string }) => {
+    let color = "bg-gray-200 text-gray-700";
+    let label = priority;
+
+    switch (priority) {
+      case "LOW":
+        color = "bg-green-100 text-green-700 border border-green-400";
+        label = "Baja";
+        break;
+      case "MEDIUM":
+        color = "bg-yellow-100 text-yellow-700 border border-yellow-400";
+        label = "Media";
+        break;
+      case "HIGH":
+        color = "bg-red-100 text-red-700 border border-red-400";
+        label = "Alta";
+        break;
+      default:
+        label = priority;
+    }
+
+    return (
+      <span
+        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${color}`}
+      >
+        {label}
+      </span>
+    );
+  };
+
   if (isLoading)
     return <p className="text-secondary">Cargando proyecto y datos...</p>;
   if (error) return <p className="text-red-600">Error: {error}</p>;
-  if (!project) return <p className="text-secondary">Proyecto no encontrado.</p>;
+  if (!project)
+    return <p className="text-secondary">Proyecto no encontrado.</p>;
 
   return (
     <div className="p-6 bg-white rounded-2xl shadow-md w-full mx-auto">
@@ -183,9 +228,15 @@ export default function ProjectDetailPage() {
             <table className="w-full border-collapse text-left text-sm text-gray-600">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-gray-900">Nombre</th>
-                  <th className="px-4 py-3 font-medium text-gray-900">Descripción</th>
-                  <th className="px-4 py-3 font-medium text-gray-900">Estado</th>
+                  <th className="px-4 py-3 font-medium text-gray-900">
+                    Nombre
+                  </th>
+                  <th className="px-4 py-3 font-medium text-gray-900">
+                    Descripción
+                  </th>
+                  <th className="px-4 py-3 font-medium text-gray-900">
+                    Prioridad
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -204,7 +255,9 @@ export default function ProjectDetailPage() {
                     >
                       <td className="px-4 py-3">{task.name}</td>
                       <td className="px-4 py-3">{task.description}</td>
-                      <td className="px-4 py-3">{task.status}</td>
+                      <td className="px-4 py-3">
+                        <PriorityBadge priority={task.priority} />
+                      </td>
                     </tr>
                   ))
                 )}

@@ -146,6 +146,42 @@ export default function TaskView() {
     setShowFeedbackModal(true);
   };
 
+  // Badge component (puedes moverlo a otro archivo si lo deseas)
+  const StatusBadge = ({ status }: { status: string }) => {
+    let color = "bg-gray-300 text-gray-800";
+    let label = status;
+
+    // Traducción y color
+    switch (status) {
+      case "PENDING":
+        color = "bg-yellow-100 text-yellow-700 border border-yellow-400";
+        label = "Pendiente";
+        break;
+      case "IN_PROGRESS":
+        color = "bg-blue-100 text-blue-700 border border-blue-400";
+        label = "En progreso";
+        break;
+      case "COMPLETED":
+        color = "bg-green-100 text-green-700 border border-green-400";
+        label = "Completada";
+        break;
+      case "REVIEWED":
+        color = "bg-purple-100 text-purple-700 border border-purple-400";
+        label = "Revisada";
+        break;
+      default:
+        label = status;
+    }
+
+    return (
+      <span
+        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${color}`}
+      >
+        {label}
+      </span>
+    );
+  };
+
   // Función para agregar feedback localmente tras crear
   const handleFeedbackCreated = (feedback: FeedbackDTO) => {
     setFeedbacks((prev) => ({
@@ -210,7 +246,11 @@ export default function TaskView() {
         </div>
         <div>
           <span className="font-semibold text-third">Estado:</span>{" "}
-          <span className="text-gray-700">{task.status}</span>
+          {!isTeacher && submissions.some((s) => s.userId === user?.id) ? (
+            <StatusBadge status="COMPLETED" />
+          ) : (
+            <StatusBadge status={task.status} />
+          )}
         </div>
         <div>
           <span className="font-semibold text-third">Prioridad:</span>{" "}
@@ -279,7 +319,7 @@ export default function TaskView() {
           </h2>
 
           {submissions.length === 0 ? (
-            <p className="text-gray-500">Ningún estudiante ha entregado aún.</p>
+            <p className="text-gray-500">No se ha realizado ninguna entrega.</p>
           ) : (
             <ul className="space-y-4">
               {submissions.map((sub) => {
